@@ -451,4 +451,61 @@
                         }
                     }
                     progressFill.style.width = progress + '%';
-                    percentText.textContent = Math
+                    percentText.textContent = Math.round(progress) + '%';
+                }, duration / (step.percent - progress));
+            }
+            
+            nextStep();
+        }
+        
+        function simulateSystemHealth() {
+            const steps = [
+                { element: 'search-status', text: 'Database located', delay: 800 },
+                { element: 'connect-status', text: 'Connection established', delay: 1200 },
+                { element: 'auth-status', text: 'Authentication successful', delay: 1500 }
+            ];
+
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    const element = document.getElementById(step.element);
+                    const indicator = element.querySelector('.status-indicator');
+                    
+                    indicator.classList.add('online');
+                    element.querySelector('span:last-child').textContent = step.text;
+                    
+                    if (index === steps.length - 1) {
+                        document.getElementById('init-text').textContent = "System fully operational";
+                    }
+                }, step.delay);
+            });
+        }
+
+        function resetConnection() {
+            const progressFill = document.getElementById('progress-fill');
+            const percentText = document.getElementById('connection-percent');
+            const statusText = document.getElementById('status-text');
+            const indicator = document.getElementById('status-indicator');
+            
+            progressFill.style.width = '0%';
+            percentText.textContent = '0%';
+            indicator.classList.remove('online');
+            indicator.classList.add('offline');
+            statusText.textContent = 'Checking connection...';
+        }
+    </script>
+    <script>
+        // Create star animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const body = document.body;
+            for(let i=0; i<50; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random()*100}%`;
+                star.style.top = `${Math.random()*100}%`;
+                star.style.animationDelay = `${Math.random()*3}s`;
+                body.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>
