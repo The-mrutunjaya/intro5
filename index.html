@@ -13,159 +13,76 @@
             font-family: 'Montserrat', sans-serif;
             background: #000;
             color: #fff;
-            overflow-x: hidden;
-            position: relative;
+            overflow: hidden; /* Prevent scrolling */
             display: flex; /* Use Flexbox */
             justify-content: center; /* Center horizontally */
             align-items: center; /* Center vertically */
-            min-height: 100vh; /* Full height */
-        
+            height: 100vh; /* Full height */
+            width: 100vw; /* Full width */
+        }
+
         .container {
             width: 100%; /* Use percentage for responsive width */
             max-width: 100%; /* Set a max width */
             padding: .5rem; /* Add padding */
-        
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(255,255,255,0.8);
-            border-radius: 50%;
-            animation: twinkle 3s infinite alternate;
-        }
-        @keyframes twinkle {
-            0% { opacity: 0.2; }
-            100% { opacity: 1; }
-        }
-        
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        
-        @keyframes slideUp {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-100%); }
+            text-align: center; /* Center text */
         }
 
-        @keyframes glow {
-            0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
-            100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
-        }
-        
-        .title-line {
-            position: relative;
-            color: #fff;
-            font-weight: 200;
-        }
-        .title-line::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: rgba(255,255,255,0.2);
-        }
-        
-        @keyframes gradientShift {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
-        }
-        
-        .progress-bar {
-            height: 0.35rem;
-            position: relative;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            position: absolute;
-            height: 100%;
-            border-radius: 0.5rem;
-            background: linear-gradient(90deg, #4f46e5, #7c3aed);
-            transition: width 0.4s ease;
-            box-shadow: 0 0 10px rgba(79, 70, 229, 0.3);
-        }
-        
-        .status-indicator {
-            display: inline-flex;
-            transition: all 0.3s ease;
-            width: 10px;
-            height: 10px;
-            margin-right: 10px;
-            border-radius: 50%;
-            position: relative;
-            box-shadow: 0 0 8px currentColor;
-        }
-        .status-indicator::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            left: -3px;
-            right: -3px;
-            bottom: -3px;
-            border-radius: 50%;
-            opacity: 0.3;
-            background: currentColor;
-        }
-        .status-indicator::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: currentColor;
-        }
-        .status-indicator::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: currentColor;
-        }
-        
-        .online {
-            color: #00ff00;
-        }
-        
-        .offline {
-            color: #ff0000;
-        }
-        
         .connection-card {
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(15, 15, 15, 0.6);
+            background: transparent; /* Make background transparent */
             padding: 1.5rem;
             border-radius: 12px;
             margin-bottom: 1rem;
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: none; /* Remove shadow */
+            opacity: 0; /* Start hidden */
+            transition: opacity 0.5s ease; /* Smooth transition for visibility */
         }
-        
-        .connection-card:hover {
-            border-color: rgba(255, 255, 255, 0.3);
+
+        .connection-card.visible {
+            opacity: 1; /* Make visible */
+        }
+
+        .error-message {
+            display: none; /* Hidden by default */
+            background: rgba(15, 15, 15, 0.8); /* Match background */
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out, float 3s ease-in-out infinite; /* Floating effect */
+            position: relative; /* For floating effect */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        .warning-icon {
+            color: #ffcc00; /* Warning color */
+            margin-right: 0.5rem;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center p-4">
-    <div class="w-full px-4 max-w-2xl">
+<body>
+    <div class="container">
         <div class="text-center mb-6" id="content">
-            <h1 class="text-4xl sm:text-5xl font-thin tracking-tighter mb-2">Dr.Researcher</h1>
-            <p class="text-sm text-gray-400 tracking-wider">- version 3.2 -</p>
+            <h1 class="text-4xl sm:text-5xl font-thin tracking-tighter mb-2" id="title">Dr.Researcher</h1>
+            <p class="text-sm text-gray-400 tracking-wider" id="booting-text" style="display: none;">Booting system...</p>
+            <p class="text-xs text-gray-500 mt-1" id="booting-subtext" style="display: none;">Loading core components</p>
         </div>
         
         <div class="space-y-6">
             <!-- Loading Animation -->
-            <div class="connection-card">
+            <div class="connection-card" id="loading-card">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <div class="animate-spin">
@@ -184,22 +101,19 @@
                     <p class="text-xs text-gray-400 mb-1">System Status</p>
                     <div id="init-messages" class="space-y-2 text-sm">
                         <div class="flex items-center" id="search-status">
-                            <span class="status-indicator mr-3"></span>
                             <span>Searching database...</span>
                         </div>
                         <div class="flex items-center" id="connect-status">
-                            <span class="status-indicator mr-2"></span>
                             <span>Establishing connection...</span>
                         </div>
                         <div class="flex items-center" id="auth-status">
-                            <span class="status-indicator mr-2"></span>
                             <span>Authenticating credentials...</span>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Secure Connection Check -->
-            <div class="connection-card border border-blue-500/20 hover:border-blue-400/50 transition-all">
+            <div class="connection-card border border-blue-500/20 hover:border-blue-400/50 transition-all" id="secure-connection-card">
                 <div class="mb-6">
                     <h3 class="text-xl font-light mb-1 flex items-center">
                         <svg class="w-5 h-5 mr-2 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,7 +131,6 @@
                         </svg>
                         <div>
                             <div class="flex items-center mb-1">
-                                <span id="https-status-indicator" class="status-indicator"></span>
                                 <span id="https-status-text" class="font-light">Establishing TLS 1.3 Encryption...</span>
                             </div>
                             <p class="text-xs text-gray-400">Encryption protocol</p>
@@ -232,7 +145,6 @@
                         </svg>
                         <div>
                             <div class="flex items-center mb-1">
-                                <span id="db-status-indicator" class="status-indicator"></span>
                                 <span id="db-status-text" class="font-light">Validating Database Schema...</span>
                             </div>
                             <p class="text-xs text-gray-400">Connection stability</p>
@@ -241,13 +153,12 @@
                 </div>
             </div>
             
-            <!-- Connection Progress -->
-            <div class="connection-card">
+            <!-- Connection Status -->
+            <div class="connection-card" id="connection-status-card">
                 <div class="mb-4">
                     <p class="text-xs text-gray-400 mb-1">Network Status</p>
-                    <div class="flex items-center" id="network-status">
-                        <span id="status-indicator" class="status-indicator offline mr-2"></span>
-                        <span id="status-text">Offline</span>
+                    <div id="network-status">
+                        <span id="status-text">Checking connection...</span>
                     </div>
                 </div>
                 <div class="flex items-center mb-4">
@@ -260,33 +171,26 @@
                     </div>
                 </div>
                 
+                <div class="error-message" id="error-message">
+                    <div class="flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle warning-icon"></i>
+                        <p class="text-sm">
+                            <span id="error-text">Oops! It seems you're offline.</span>
+                            <br>
+                            <span class="text-xs">Please check your internet connection.</span>
+                        </p>
+                    </div>
+                    <button id="retry-btn" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none">
+                        Retry
+                    </button>
+                </div>
+
                 <div class="mt-4">
                     <div class="flex justify-between items-center mb-2">
                         <span id="connection-status" class="flex items-center font-medium">
-                            <span id="status-indicator" class="status-indicator offline mr-2"></span>
                             <span id="status-text">Checking connection...</span>
                         </span>
-                        <span id="connection-percent" class="text-white">0%</span>
-                    </div>
-                    
-                    <div class="progress-bar">
-                        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
-                    </div>
-                    
-                    <div id="error-message" class="hidden mt-4 px-4 py-3 bg-gradient-to-r from-red-900/60 to-rose-900/50 rounded-lg border border-red-800/60 transition-all duration-300 animate-pulse">
-                        <div class="flex items-center">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                            <p class="text-sm">
-                                <span id="error-text">No internet connection detected.</span>
-                                <button id="retry-btn" class="ml-2 text-white hover:underline focus:outline-none">
-                                    Retry
-                                </button>
-                            </p>
-                        </div>
+                        <span id="connection-percent" class="text-white">0%</span> <!-- Original percentage display -->
                     </div>
                 </div>
             </div>
@@ -301,9 +205,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize system sequence
             const initSteps = [
-                { text: "Initializing security", subtext: "Starting encryption modules", delay: 600 },
-                { text: "Loading network stacks", subtext: "Configuring interfaces", delay: 800 },
-                { text: "Booting services", subtext: "Starting background processes", delay: 1000 },
+                { text: "Booting system...", subtext: "Loading core components", delay: 1000 },
+                { text: "Searching database...", subtext: "", delay: 800 },
+                { text: "Establishing connection...", subtext: "", delay: 800 },
+                { text: "Authenticating credentials...", subtext: "", delay: 800 },
                 { text: "System ready", subtext: "Establishing connections", delay: 700 }
             ];
             
@@ -311,12 +216,24 @@
             function runInitStep() {
                 if (currentInitStep < initSteps.length) {
                     const step = initSteps[currentInitStep];
-                    document.getElementById('init-text').textContent = step.text;
-                    document.getElementById('init-subtext').textContent = step.subtext;
+                    if (currentInitStep === 0) {
+                        document.getElementById('booting-text').style.display = 'block';
+                        document.getElementById('booting-subtext').style.display = 'block';
+                    } else {
+                        const statusText = document.getElementById('init-text');
+                        const statusSubtext = document.getElementById('init-subtext');
+                        statusText.textContent = step.text;
+                        statusSubtext.textContent = step.subtext;
+                        document.getElementById('loading-card').classList.add('visible');
+                    }
                     currentInitStep++;
                     setTimeout(runInitStep, step.delay);
                 } else {
                     checkHTTPS();
+                    document.getElementById('secure-connection-card').classList.add('visible');
+                    setTimeout(() => {
+                        document.getElementById('connection-status-card').classList.add('visible');
+                    }, 500); // Delay for the connection status card to appear
                 }
             }
             
@@ -328,17 +245,17 @@
             // Initialize connection status
             checkConnection();
             
-            // Simulate connection progress
-            simulateConnectionProgress();
-            
             // Add retry button event listener
             document.getElementById('retry-btn').addEventListener('click', function() {
                 resetConnection();
-                simulateConnectionProgress();
+                checkConnection();
             });
             
             // Start system status animation
             simulateSystemHealth();
+            
+            // Simulate connection progress
+            simulateConnectionProgress();
             
             // Add online/offline event listeners
             window.addEventListener('online', function() {
@@ -352,22 +269,17 @@
         
         function checkHTTPS() {
             setTimeout(function() {
-                const httpsIndicator = document.getElementById('https-status-indicator');
                 const httpsText = document.getElementById('https-status-text');
                 
                 if (window.location.protocol === 'https:') {
-                    httpsIndicator.classList.add('online');
                     httpsText.textContent = 'HTTPS Secure';
                 } else {
-                    httpsIndicator.classList.add('offline');
                     httpsText.textContent = 'HTTP Not Secure';
                 }
-                httpsIndicator.classList.remove('status-indicator');
             }, 1000);
         }
         
         function checkDatabase() {
-            const dbIndicator = document.getElementById('db-status-indicator');
             const dbText = document.getElementById('db-status-text');
             
             // Simulating random success (90% chance)
@@ -375,87 +287,25 @@
             
             setTimeout(function() {
                 if (isSuccess) {
-                    dbIndicator.classList.add('online');
                     dbText.textContent = 'Database Connected';
                 } else {
-                    dbIndicator.classList.add('offline');
                     dbText.textContent = 'Connection Failed';
                 }
-                dbIndicator.classList.remove('status-indicator');
             }, 1000);
         }
         
         function checkConnection() {
-            const indicator = document.getElementById('status-indicator');
             const statusText = document.getElementById('status-text');
             const errorBox = document.getElementById('error-message');
             
             if (navigator.onLine) {
-                indicator.classList.remove('offline');
-                indicator.classList.add('online');
                 statusText.textContent = 'Online';
-                errorBox.classList.add('hidden');
+                errorBox.style.display = 'none'; // Hide error message
             } else {
-                indicator.classList.remove('online');
-                indicator.classList.add('offline');
                 statusText.textContent = 'Offline';
-                document.getElementById('error-text').textContent = 'No internet connection detected.';
-                errorBox.classList.remove('hidden');
+                document.getElementById('error-text').textContent = 'Oops! It seems you\'re offline.';
+                errorBox.style.display = 'block'; // Show error message
             }
-        }
-        
-        function simulateConnectionProgress() {
-            const progressFill = document.getElementById('progress-fill');
-            const percentText = document.getElementById('connection-percent');
-            const statusText = document.getElementById('status-text');
-            const errorBox = document.getElementById('error-message');
-            
-            const steps = [
-                { percent: 15, text: "Locating network..." }, 
-                { percent: 30, text: "Authenticating..." },
-                { percent: 50, text: "Establishing connection..." },
-                { percent: 75, text: "Verifying security..." },
-                { percent: 90, text: "Finalizing handshake..." },
-                { percent: 100, text: "Secure Connection Established" }
-            ];
-            
-            let currentStep = 0;
-            let progress = 0;
-            
-            function nextStep() {
-                if (currentStep >= steps.length) return;
-                
-                const step = steps[currentStep];
-                const duration = 300 + Math.random() * 700;
-                
-                const interval = setInterval(() => {
-                    progress += 1;
-                    if (progress >= step.percent) {
-                        progress = step.percent;
-                        clearInterval(interval);
-                        
-                        statusText.textContent = step.text;
-                        if (progress === 100) {
-                            setTimeout(() => {
-                                if (navigator.onLine) {
-                                    errorBox.classList.add('hidden');
-                                } else {
-                                    statusText.textContent = 'Connection Failed';
-                                    document.getElementById('error-text').textContent = 'Network unreachable';
-                                    errorBox.classList.remove('hidden');
-                                }
-                            }, 500);
-                        } else {
-                            currentStep++;
-                            setTimeout(nextStep, 200);
-                        }
-                    }
-                    progressFill.style.width = progress + '%';
-                    percentText.textContent = Math.round(progress) + '%';
-                }, duration / (step.percent - progress));
-            }
-            
-            nextStep();
         }
         
         function simulateSystemHealth() {
@@ -468,9 +318,6 @@
             steps.forEach((step, index) => {
                 setTimeout(() => {
                     const element = document.getElementById(step.element);
-                    const indicator = element.querySelector('.status-indicator');
-                    
-                    indicator.classList.add('online');
                     element.querySelector('span:last-child').textContent = step.text;
                     
                     if (index === steps.length - 1) {
@@ -480,32 +327,25 @@
             });
         }
 
-        function resetConnection() {
-            const progressFill = document.getElementById('progress-fill');
+        function simulateConnectionProgress() {
             const percentText = document.getElementById('connection-percent');
-            const statusText = document.getElementById('status-text');
-            const indicator = document.getElementById('status-indicator');
-            
-            progressFill.style.width = '0%';
-            percentText.textContent = '0%';
-            indicator.classList.remove('online');
-            indicator.classList.add('offline');
-            statusText.textContent = 'Checking connection...';
+            let progress = 0;
+
+            const interval = setInterval(() => {
+                if (progress < 100) {
+                    progress += 20; // Increment by 20% for faster progress
+                    percentText.textContent = progress + '%'; // Update the original percentage display
+                } else {
+                    clearInterval(interval);
+                }
+            }, 300); // Update every 300ms for faster progress
         }
-    </script>
-    <script>
-        // Create star animation
-        document.addEventListener('DOMContentLoaded', function() {
-            const body = document.body;
-            for(let i=0; i<50; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                star.style.left = `${Math.random()*100}%`;
-                star.style.top = `${Math.random()*100}%`;
-                star.style.animationDelay = `${Math.random()*3}s`;
-                body.appendChild(star);
-            }
-        });
+
+        function resetConnection() {
+            const statusText = document.getElementById('status-text');
+            statusText.textContent = 'Checking connection...';
+            document.getElementById('connection-percent').textContent = '0%'; // Reset the original percentage display
+        }
     </script>
 </body>
 </html>
